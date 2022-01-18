@@ -7,7 +7,7 @@ const docSchema  = ({
     description:{type:String},
     tagSpecial:{type:Boolean},
     rating:{type:Number},
-    tagging:{type:Object},
+    tagging:{type:Array},
     created_at:{type:Date,default:Date.now()},
     updated_at:{type:Date,default:Date.now()},
     deleted_at:{type:Date,default:null}

@@ -21,7 +21,7 @@ app.use(cors(corsOption));
 // ROUTING STARTED
 var indexRouter = require('./routes/index');
 app.post("/api/add-product", indexRouter);
-app.get('/api/count-tag', indexRouter);
+app.post('/api/tag-special-count', indexRouter);
 app.put("/api/update-tag", indexRouter);
 app.delete("/api/delete-tag", indexRouter);
 

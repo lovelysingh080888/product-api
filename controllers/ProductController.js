@@ -36,10 +36,20 @@ exports.addProduct = (req, res) => {
  * 
  * count tagspecial if tagspecial is true and find out the maximum rating of product
  */
-exports.countOfTagSpecial = (req, res) => {
-    console.log("ssdf")
-         Product.aggregate([{ $project: { tagSpecial: 1}},
-        { $count: tagSpecial, $max:rating }],function(err, result){
+exports.countTagSpecial = (req, res) => {
+         const {productId} = req.body;
+         Product.aggregate([
+            {
+              $match: {
+                productId: {$not: productId},
+                tagSpecial:true
+              }
+            },
+            {
+              $count: "tagSpecial",
+              $max: "rating"
+            }
+          ],function(err, result){
             if(err){
               res.status(200).json({status:false, message: "Something went wrong" })
             }else{
@@ -56,9 +66,10 @@ exports.countOfTagSpecial = (req, res) => {
  */
 exports.updateTagging = (req, res) => {
 
-    const {productId, tagingYear} = req.body;
+    const {productId, tagingYear, tagId} = req.body;
 
-    Product.updateOne({productId: productId}, { $set: {"tagging.year": tagingYear} }, function(error,result){
+    Product.updateOne({productId: productId , "tagging.tagId":tagId},
+      { $set: {"tagging.$.year": tagingYear} }, function(error,result){
      
       if(error){
         res.status(200).json({status:false, message: "Something went wrong" })
@@ -78,10 +89,10 @@ exports.updateTagging = (req, res) => {
  */
 exports.removeTagging = (req, res) => {
     
-    const {tagingYear} = req.body;
+    const {productId, tagingYear} = req.body;
 
-    Product.updateMany({"tagging.year": { $gt: tagingYear} },
-    {$unset: {tagging:1}} , {multi: true}, function(error,result){
+    Product.updateMany({productId:productId },
+    { $pull: { tagging: { year:{ $gt: tagingYear}  } }}, function(error,result){
      
         if(error){
           res.status(200).json({status:false, message: "Something went wrong" })
